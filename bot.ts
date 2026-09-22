@@ -701,7 +701,35 @@ client.on(
     async ({ data: message, api }) => {
         if (message.author.bot) return;
         const raw = message.content?.trim() ?? "";
-       
+        
+if (raw.toLowerCase() === "!servers") {
+    if (message.author.id !== OWNER_ID) {
+        await api.channels.createMessage(message.channel_id, {
+            content: "❌ You don't have permission to use this command.",
+            message_reference: { message_id: message.id },
+        });
+        return;
+    }
+
+    await serversCommand(api, message, botGuilds);
+    return;
+}
+
+if (raw.toLowerCase().startsWith("!leave guild ")) {
+    if (message.author.id !== OWNER_ID) {
+        await api.channels.createMessage(message.channel_id, {
+            content: "❌ You don't have permission to use this command.",
+            message_reference: { message_id: message.id },
+        });
+        return;
+    }
+
+    const guildId = raw.slice("!leave guild ".length).trim();
+
+    await leaveGuildCommand(api, message, guildId);
+    return;
+}
+        
 if (
   raw.toLowerCase().startsWith("!edit avatar ") ||
   raw.toLowerCase().startsWith("!edit banner ")
