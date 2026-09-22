@@ -29,6 +29,10 @@ if (!CLIENT_ID) {
 
 const PREFIX = "!quest";
 
+const OWNER_ID = "YOUR_DISCORD_USER_ID";
+const AVATAR_COOLDOWN = 5000;
+let lastAvatarEdit = 0;
+
 const INTENTS =
     GatewayIntentBits.Guilds |
     GatewayIntentBits.GuildMessages |
