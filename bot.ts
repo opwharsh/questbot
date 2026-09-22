@@ -701,8 +701,6 @@ client.on(
         const raw = message.content?.trim() ?? "";
         if (!raw.toLowerCase().startsWith(PREFIX)) return;
 
-const raw = message.content?.trim() ?? "";
-
 // !edit avatar <image-url>
 if (raw.toLowerCase().startsWith("!edit avatar ")) {
   if (message.author.id !== OWNER_ID) {
