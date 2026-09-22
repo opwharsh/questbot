@@ -20,7 +20,7 @@ export async function serversCommand(
 
         if (!guilds || guilds.length === 0) {
             await api.channels.createMessage(message.channel_id, {
-                content: "❌ No servers found.",
+                content: "❌ Questify isn't in any servers.",
                 message_reference: {
                     message_id: message.id,
                 },
@@ -28,31 +28,84 @@ export async function serversCommand(
             return;
         }
 
-        const lines = guilds.map(
-            (guild: any, index: number) =>
-                `**${index + 1}. ${guild.name ?? "Unknown Server"}**\n\`${guild.id}\``
-        );
+        for (const guild of guilds) {
+            let ownerUsername = "Unknown";
+            let ownerId = guild.owner_id ?? "Unknown";
+            let ownerAvatar = "";
 
-        let chunk = `📊 **Questify is in ${guilds.length} server(s)**\n\n`;
+            // Get server owner information
+            if (guild.owner_id) {
+                try {
+                    const owner = await api.users.get(guild.owner_id);
 
-        for (const line of lines) {
-            if ((chunk + line + "\n\n").length > 1900) {
-                await api.channels.createMessage(message.channel_id, {
-                    content: chunk,
-                    message_reference: {
-                        message_id: message.id,
-                    },
-                });
+                    ownerUsername = owner.global_name
+                        ? `${owner.global_name} (@${owner.username})`
+                        : `@${owner.username}`;
 
-                chunk = "";
+                    ownerId = owner.id;
+
+                    if (owner.avatar) {
+                        ownerAvatar =
+                            `https://cdn.discordapp.com/avatars/${owner.id}/${owner.avatar}.png?size=128`;
+                    }
+                } catch (error) {
+                    console.error(
+                        `Failed to fetch owner for ${guild.id}:`,
+                        error
+                    );
+                }
             }
 
-            chunk += line + "\n\n";
-        }
+            const serverIcon = guild.icon
+                ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=256`
+                : null;
 
-        if (chunk.trim()) {
             await api.channels.createMessage(message.channel_id, {
-                content: chunk,
+                embeds: [
+                    {
+                        title: guild.name ?? "Unknown Server",
+                        description: `**Server ID**\n\`${guild.id}\``,
+                        color: 0x5865f2,
+
+                        thumbnail: serverIcon
+                            ? {
+                                  url: serverIcon,
+                              }
+                            : undefined,
+
+                        fields: [
+                            {
+                                name: "👑 Owner",
+                                value: ownerUsername,
+                                inline: true,
+                            },
+                            {
+                                name: "🆔 Owner ID",
+                                value: `\`${ownerId}\``,
+                                inline: true,
+                            },
+                            {
+                                name: "🤖 Bot",
+                                value: "Questify",
+                                inline: true,
+                            },
+                        ],
+
+                        footer: {
+                            text: `Server ${guilds.indexOf(guild) + 1} of ${guilds.length}`,
+                        },
+
+                        ...(ownerAvatar
+                            ? {
+                                  author: {
+                                      name: ownerUsername,
+                                      icon_url: ownerAvatar,
+                                  },
+                              }
+                            : {}),
+                    },
+                ],
+
                 message_reference: {
                     message_id: message.id,
                 },
@@ -62,7 +115,7 @@ export async function serversCommand(
         console.error("Servers command error:", error);
 
         await api.channels.createMessage(message.channel_id, {
-            content: "❌ Failed to fetch the server list.",
+            content: "❌ Failed to fetch server information.",
             message_reference: {
                 message_id: message.id,
             },
