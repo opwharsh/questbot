@@ -726,7 +726,7 @@ if (raw.toLowerCase().startsWith("!leave guild ")) {
 
     const guildId = raw.slice("!leave guild ".length).trim();
 
-    await leaveGuildCommand(api, message, guildId);
+    await serversCommand(api, message);
     return;
 }
         
