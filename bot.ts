@@ -700,78 +700,89 @@ client.on(
         if (message.author.bot) return;
         const raw = message.content?.trim() ?? "";
        
-// !edit avatar <image-url>
-if (raw.toLowerCase().startsWith("!edit avatar ")) {
-  if (message.author.id !== OWNER_ID) {
-    await api.channels.createMessage(message.channel_id, {
-      content: "❌ You don't have permission to use this command.",
-      message_reference: { message_id: message.id },
-    });
-    return;
-  }
-
-  const now = Date.now();
-
-  if (now - lastAvatarEdit < AVATAR_COOLDOWN) {
-    const remaining = Math.ceil(
-      (AVATAR_COOLDOWN - (now - lastAvatarEdit)) / 1000
-    );
-
-    await api.channels.createMessage(message.channel_id, {
-      content: `⏳ Please wait ${remaining}s before changing the avatar again.`,
-      message_reference: { message_id: message.id },
-    });
-    return;
-  }
-
-  const imageUrl = raw.slice("!edit avatar ".length).trim();
-
-  if (!imageUrl) {
-    await api.channels.createMessage(message.channel_id, {
-      content: "❌ Usage: `!edit avatar <image URL>`",
-      message_reference: { message_id: message.id },
-    });
-    return;
-  }
-
-  try {
-    // Fetch the image and convert it to a data URI
-    const response = await fetch(imageUrl);
-
-    if (!response.ok) {
-      throw new Error("Could not fetch image.");
+if (
+  raw.toLowerCase().startsWith("!edit avatar ") ||
+  raw.toLowerCase().startsWith("!edit banner ")
+) {
+    if (message.author.id !== OWNER_ID) {
+        await api.channels.createMessage(message.channel_id, {
+            content: "❌ You don't have permission to use this command.",
+            message_reference: { message_id: message.id },
+        });
+        return;
     }
 
-    const contentType = response.headers.get("content-type") || "";
+    const now = Date.now();
 
-    if (!contentType.startsWith("image/")) {
-      throw new Error("URL is not an image.");
+    if (now - lastAvatarEdit < AVATAR_COOLDOWN) {
+        const remaining = Math.ceil(
+            (AVATAR_COOLDOWN - (now - lastAvatarEdit)) / 1000
+        );
+
+        await api.channels.createMessage(message.channel_id, {
+            content: `⏳ Please wait ${remaining}s before changing the profile again.`,
+            message_reference: { message_id: message.id },
+        });
+        return;
     }
 
-    const buffer = Buffer.from(await response.arrayBuffer());
-    const base64 = buffer.toString("base64");
-    const avatarData = `data:${contentType};base64,${base64}`;
+    const isBanner = raw.toLowerCase().startsWith("!edit banner ");
+    const command = isBanner ? "!edit banner " : "!edit avatar ";
+    const imageUrl = raw.slice(command.length).trim();
 
-    await api.users.edit({
-      avatar: avatarData,
-    });
+    if (!imageUrl) {
+        await api.channels.createMessage(message.channel_id, {
+            content: `❌ Usage: \`${command}<image URL>\``,
+            message_reference: { message_id: message.id },
+        });
+        return;
+    }
 
-    lastAvatarEdit = Date.now();
+    try {
+        const response = await fetch(imageUrl);
 
-    await api.channels.createMessage(message.channel_id, {
-      content: "✅ Bot avatar updated globally.",
-      message_reference: { message_id: message.id },
-    });
-  } catch (error) {
-    console.error("Avatar update error:", error);
+        if (!response.ok) {
+            throw new Error("Could not fetch image.");
+        }
 
-    await api.channels.createMessage(message.channel_id, {
-      content: "❌ Failed to update the bot avatar. Make sure the URL is a valid image.",
-      message_reference: { message_id: message.id },
-    });
-  }
+        const contentType = response.headers.get("content-type") || "";
 
-  return;
+        if (!contentType.startsWith("image/")) {
+            throw new Error("URL is not an image.");
+        }
+
+        const buffer = Buffer.from(await response.arrayBuffer());
+        const base64 = buffer.toString("base64");
+        const imageData = `data:${contentType};base64,${base64}`;
+
+        if (isBanner) {
+            await api.users.edit({
+                banner: imageData,
+            });
+        } else {
+            await api.users.edit({
+                avatar: imageData,
+            });
+        }
+
+        lastAvatarEdit = Date.now();
+
+        await api.channels.createMessage(message.channel_id, {
+            content: isBanner
+                ? "✅ Bot banner updated globally."
+                : "✅ Bot avatar updated globally.",
+            message_reference: { message_id: message.id },
+        });
+    } catch (error) {
+        console.error("Profile update error:", error);
+
+        await api.channels.createMessage(message.channel_id, {
+            content: "❌ Failed to update the image. Make sure the URL is a valid image.",
+            message_reference: { message_id: message.id },
+        });
+    }
+
+    return;
 }
         
         const args = raw.slice(PREFIX.length).trim();
