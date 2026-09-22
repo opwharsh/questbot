@@ -711,7 +711,7 @@ if (raw.toLowerCase() === "!servers") {
         return;
     }
 
-    await serversCommand(api, message, botGuilds);
+    await serversCommand(api, message);
     return;
 }
 
@@ -726,7 +726,7 @@ if (raw.toLowerCase().startsWith("!leave guild ")) {
 
     const guildId = raw.slice("!leave guild ".length).trim();
 
-    await serversCommand(api, message);
+    await leaveGuildCommand(api, message, guildId);
     return;
 }
         
