@@ -26,7 +26,7 @@ export async function leaveGuildCommand(
     }
 
     try {
-        await api.guilds.delete(guildId);
+        await api.users.leaveGuild(guildId);
 
         await api.channels.createMessage(message.channel_id, {
             content: `✅ Successfully left the server \`${guildId}\`.`,
