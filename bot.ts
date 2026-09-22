@@ -29,7 +29,7 @@ if (!CLIENT_ID) {
 
 const PREFIX = "!quest";
 
-const OWNER_ID = "YOUR_DISCORD_USER_ID";
+const OWNER_ID = "867633787529986048";
 const AVATAR_COOLDOWN = 5000;
 let lastAvatarEdit = 0;
 
