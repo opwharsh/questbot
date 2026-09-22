@@ -14,6 +14,8 @@ import { WebSocketManager } from "@discordjs/ws";
 import { runQuestsForToken, fetchQuestsStatus } from "./src/questRunner";
 import type { Quest, QuestStatusInfo } from "./src/questRunner";
 import { setStatus } from "./status.js";
+import { serversCommand } from "./servers";
+import { leaveGuildCommand } from "./leaveguild";
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
