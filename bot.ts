@@ -699,8 +699,7 @@ client.on(
     async ({ data: message, api }) => {
         if (message.author.bot) return;
         const raw = message.content?.trim() ?? "";
-        if (!raw.toLowerCase().startsWith(PREFIX)) return;
-
+       
 // !edit avatar <image-url>
 if (raw.toLowerCase().startsWith("!edit avatar ")) {
   if (message.author.id !== OWNER_ID) {
