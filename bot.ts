@@ -30,6 +30,7 @@ if (!CLIENT_ID) {
 }
 
 let PREFIX = "!";
+const NO_PREFIX_USERS = new Set<string>();
 
 const OWNER_ID = "867633787529986048";
 const AVATAR_COOLDOWN = 5000;
