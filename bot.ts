@@ -850,6 +850,44 @@ if (raw.toLowerCase().startsWith("!status ")) {
 
     return;
 }
+
+        // !prefix <new prefix> — owner only
+if (raw.toLowerCase().startsWith("!prefix ")) {
+    if (message.author.id !== OWNER_ID) {
+        await api.channels.createMessage(message.channel_id, {
+            content: "❌ You don't have permission to use this command.",
+            message_reference: { message_id: message.id },
+        });
+        return;
+    }
+
+    const newPrefix = raw.slice("!prefix ".length).trim();
+
+    if (!newPrefix) {
+        await api.channels.createMessage(message.channel_id, {
+            content: "❌ Usage: `!prefix <new prefix>`",
+            message_reference: { message_id: message.id },
+        });
+        return;
+    }
+
+    if (newPrefix.length > 3) {
+        await api.channels.createMessage(message.channel_id, {
+            content: "❌ Prefix can only be 1–3 characters long.",
+            message_reference: { message_id: message.id },
+        });
+        return;
+    }
+
+    PREFIX = newPrefix;
+
+    await api.channels.createMessage(message.channel_id, {
+        content: `✅ Prefix changed to \`${PREFIX}\``,
+        message_reference: { message_id: message.id },
+    });
+
+    return;
+}
         
       if (!raw.toLowerCase().startsWith(PREFIX.toLowerCase())) return;
 
