@@ -851,8 +851,8 @@ if (raw.toLowerCase().startsWith("!status ")) {
     return;
 }
         
-        if (!raw.toLowerCase().startsWith(PREFIX.toLowerCase())) return;
-        const args = raw.slice(PREFIX.length).trim();
+        if (!commandText.toLowerCase().startsWith("quest")) return;
+        const args = commandText.slice("quest".length).trim();
 
         // !quest status <token>  — legacy direct token support kept
         if (args.toLowerCase().startsWith("status ")) {
