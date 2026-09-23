@@ -13,7 +13,7 @@ import { REST } from "@discordjs/rest";
 import { WebSocketManager } from "@discordjs/ws";
 import { runQuestsForToken, fetchQuestsStatus } from "./src/questRunner";
 import type { Quest, QuestStatusInfo } from "./src/questRunner";
-import { setStatus } from "./status.js";
+import { setStatus, setCustomStatuses } from "./status.js";
 import { serversCommand } from "./servers";
 import { leaveGuildCommand } from "./leaveguild";
 
