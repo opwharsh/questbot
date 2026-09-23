@@ -891,12 +891,24 @@ if (raw.toLowerCase().startsWith("!prefix ")) {
     return;
 }
         
-      if (raw.toLowerCase().startsWith("!noprefix")) {
+   if (raw.toLowerCase().startsWith("!noprefix")) {
     const noPrefixArgs = raw.slice("!noprefix".length).trim();
 
     await noPrefixCommand(api, message, noPrefixArgs);
     return;
 }
+
+// ── Quest prefix / no-prefix parser ───────────────────────────────
+const hasPrefix = raw.toLowerCase().startsWith(PREFIX.toLowerCase());
+const isNoPrefixUser = hasNoPrefix(message.author.id);
+
+if (!hasPrefix && !isNoPrefixUser) return;
+
+let args = hasPrefix
+    ? raw.slice(PREFIX.length).trim()
+    : raw.trim();
+
+if (!args.toLowerCase().startsWith("quest")) return;
 
 args = args.slice("quest".length).trim();
 
