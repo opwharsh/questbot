@@ -814,6 +814,42 @@ if (
 
     return;
 }
+        // !status <status1>, <status2>, <status3>
+if (raw.toLowerCase().startsWith("!status ")) {
+    if (message.author.id !== OWNER_ID) {
+        await api.channels.createMessage(message.channel_id, {
+            content: "❌ You don't have permission to use this command.",
+            message_reference: { message_id: message.id },
+        });
+        return;
+    }
+
+    const statusText = raw.slice("!status ".length).trim();
+
+    if (!statusText) {
+        await api.channels.createMessage(message.channel_id, {
+            content: "❌ Usage: `!status status 1, status 2, status 3`",
+            message_reference: { message_id: message.id },
+        });
+        return;
+    }
+
+    const newStatuses = statusText
+        .split(",")
+        .map((status) => status.trim())
+        .filter(Boolean);
+
+    await setCustomStatuses(newStatuses);
+
+    await api.channels.createMessage(message.channel_id, {
+        content: `✅ Statuses updated.\n\n${newStatuses
+            .map((status, index) => `${index + 1}. ${status}`)
+            .join("\n")}`,
+        message_reference: { message_id: message.id },
+    });
+
+    return;
+}
         
         if (!raw.toLowerCase().startsWith(PREFIX.toLowerCase())) return;
         const args = raw.slice(PREFIX.length).trim();
