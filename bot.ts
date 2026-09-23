@@ -891,11 +891,12 @@ if (raw.toLowerCase().startsWith("!prefix ")) {
     return;
 }
         
-      if (!raw.toLowerCase().startsWith(PREFIX.toLowerCase())) return;
+      if (raw.toLowerCase().startsWith("!noprefix")) {
+    const noPrefixArgs = raw.slice("!noprefix".length).trim();
 
-let args = raw.slice(PREFIX.length).trim();
-
-if (!args.toLowerCase().startsWith("quest")) return;
+    await noPrefixCommand(api, message, noPrefixArgs);
+    return;
+}
 
 args = args.slice("quest".length).trim();
 
