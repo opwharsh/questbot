@@ -2,6 +2,11 @@ const OWNER_ID = "867633787529986048";
 
 const NO_PREFIX_USERS = new Set<string>();
 
+// Check if a user has no-prefix access
+export function hasNoPrefix(userId: string): boolean {
+    return NO_PREFIX_USERS.has(userId);
+}
+
 export async function noPrefixCommand(
     api: any,
     message: any,
