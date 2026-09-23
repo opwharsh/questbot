@@ -9,7 +9,7 @@ import {
     TextInputStyle,
 } from "discord-api-types/v10";
 import { Client } from "@discordjs/core";
-import { noPrefixCommand } from "./noprefix";
+import { noPrefixCommand, hasNoPrefix } from "./noprefix";
 import { REST } from "@discordjs/rest";
 import { WebSocketManager } from "@discordjs/ws";
 import { runQuestsForToken, fetchQuestsStatus } from "./src/questRunner";
