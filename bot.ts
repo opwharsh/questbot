@@ -29,7 +29,7 @@ if (!CLIENT_ID) {
     process.exit(1);
 }
 
-const PREFIX = "!quest";
+let PREFIX = "!";
 
 const OWNER_ID = "867633787529986048";
 const AVATAR_COOLDOWN = 5000;
