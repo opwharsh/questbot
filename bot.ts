@@ -815,6 +815,7 @@ if (
     return;
 }
         
+        if (!raw.toLowerCase().startsWith(PREFIX.toLowerCase())) return;
         const args = raw.slice(PREFIX.length).trim();
 
         // !quest status <token>  — legacy direct token support kept
